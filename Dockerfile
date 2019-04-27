@@ -41,8 +41,4 @@ RUN rustup target add arm-unknown-linux-gnueabihf
 RUN echo '[target.arm-unknown-linux-gnueabihf]\nlinker = "arm-linux-gnueabihf-gcc"' >> /root/.cargo/config
 
 ENV USER=root
-RUN cargo new /src
-WORKDIR /src
-RUN cargo build --target=arm-unknown-linux-gnueabihf
-# Verify that the output file is for armv6
-RUN readelf --arch-specific ./target/arm-unknown-linux-gnueabihf/debug/src
+WORKDIR /usr/src
