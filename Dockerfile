@@ -5,7 +5,6 @@ RUN apt-get update && \
     --yes \
     binutils \
     curl \
-    wget \
     zip
 
 # Install the Raspberry Pi toolchain.
@@ -25,12 +24,12 @@ RUN apt-get update && \
 # --arch-specific <bin>` command in order to verify for which architecture a binary is compiled for
 # (the output will contain either `v6` or `v7` as `Tag_CPU_arch`).
 ARG RASPBERRY_PI_TOOLS_COMMIT_ID=5caa7046982f0539cf5380f94da04b31129ed521
-RUN wget https://github.com/raspberrypi/tools/archive/$RASPBERRY_PI_TOOLS_COMMIT_ID.zip -O /root/pi-tools.zip
-RUN unzip /root/pi-tools.zip -d /root
-RUN mv /root/tools-$RASPBERRY_PI_TOOLS_COMMIT_ID /root/pi-tools
+RUN curl -sL https://github.com/raspberrypi/tools/archive/$RASPBERRY_PI_TOOLS_COMMIT_ID.tar.gz \
+    | tar xzf - -C /usr/local --strip-components=1 tools-${RASPBERRY_PI_TOOLS_COMMIT_ID}/arm-bcm2708
+
 # Need to add both these to PATH.
-ENV PATH=/root/pi-tools/arm-bcm2708/arm-linux-gnueabihf/bin:$PATH
-ENV PATH=/root/pi-tools/arm-bcm2708/arm-linux-gnueabihf/libexec/gcc/arm-linux-gnueabihf/4.8.3:$PATH
+ENV PATH=/usr/local/arm-bcm2708/arm-linux-gnueabihf/bin:$PATH
+ENV PATH=/usr/local/arm-bcm2708/arm-linux-gnueabihf/libexec/gcc/arm-linux-gnueabihf/4.8.3:$PATH
 
 # Install Rust.
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --verbose
